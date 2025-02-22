@@ -53,13 +53,13 @@ const Page = () => {
               className="text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-orange-600 font-extrabold tracking-tight text-5xl drop-shadow-lg"
               variants={childVariants}
             >
-              YouTube Playlist Viewer
+              Your Focused YouTube Experience – No Distractions, Just Learning.
             </motion.h1>
             <motion.p
               className="text-transparent bg-clip-text bg-gradient-to-r from-violet-700 to-orange-500 font-bold tracking-tight text-2xl drop-shadow-md"
               variants={childVariants}
             >
-              Enter a YouTube playlist URL to get started
+              Seamlessly Browse Playlists with a Clean & Minimal UI.
             </motion.p>
           </motion.div>
 
