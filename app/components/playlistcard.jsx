@@ -3,9 +3,9 @@ import { Play, Clock, Music, MoreVertical } from "lucide-react";
 import Link from "next/link";
 const PlaylistCard = ({ playlists }) => {
   return (
-    <>
+        <>
       {playlists.map((playlist, index) => (
-        <Link href={`/play/${playlist.id}`}>
+        <Link key={playlist.id} href={`/play/${playlist.id}`}>
           <div
             key={index}
             className="group relative bg-white rounded-2xl overflow-hidden transform 
@@ -100,7 +100,7 @@ const PlaylistCard = ({ playlists }) => {
           </div>
         </Link>
       ))}
-    </>
+  </>
   );
 };
 

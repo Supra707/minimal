@@ -1,13 +1,14 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Play } from "lucide-react";
+import { Plus, Play,Loader} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { db } from "../lib/firebaseConfig"; // Make sure the path is correct
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import axios from "axios";
 const PlaylistButton = ({ user }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const[loading,setloading]=useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
   const [isValidUrl, setIsValidUrl] = useState(false);
   const tooltipRef = useRef(null);
@@ -75,6 +76,7 @@ const PlaylistButton = ({ user }) => {
   };
 
   const handleSubmit = async () => {
+    setloading(true);
     if (!user) return; // Ensure user is authenticated
 
     const urlParams = new URLSearchParams(new URL(playlistUrl).search);
@@ -119,7 +121,9 @@ const PlaylistButton = ({ user }) => {
       setIsTooltipOpen(false);
       setPlaylistUrl("");
       setIsValidUrl(false);
+      setloading(false);
       router.push(`/play/${playlistId}`);
+    
     } catch (error) {
       console.error("Error updating playlist:", error);
     }
@@ -233,8 +237,9 @@ const PlaylistButton = ({ user }) => {
                 whileTap={isValidUrl ? { scale: 0.95 } : {}}
                 whileHover={isValidUrl ? { scale: 1.05 } : {}}
               >
-                <Play size={20} className={isValidUrl ? "animate-pulse" : ""} />
-                <span>Play</span>
+                {loading?(<Loader className="animate-spin"/>):(<Play size={20} className={isValidUrl ? "animate-pulse" : ""} />)}
+                
+                <span>{loading?'Saving and redirecting':'Play'}</span>
               </motion.button>
             </div>
 

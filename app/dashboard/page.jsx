@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { auth, signInWithGoogle, logout, db } from "../lib/firebaseConfig"; // Import Firestore database (db)
-import {  getDoc,doc } from "firebase/firestore"; // Import Firestore query functions
+import { getDoc, doc } from "firebase/firestore"; // Import Firestore query functions
 import PlaylistButton from "../components/tooltip";
 import PlaylistCard from "../components/playlistcard";
 export default function Page() {
@@ -50,6 +50,7 @@ export default function Page() {
   };
 
   useEffect(() => {
+    setLoading(true);
     const fetchPlaylists = async () => {
       if (user) {
         try {
@@ -63,6 +64,7 @@ export default function Page() {
 
             console.log("User's saved playlists:", playlists); // Log the playlists array
             setplaylist(playlists);
+            setLoading(false);
           } else {
             console.log("No playlists found for this user.");
           }
@@ -162,9 +164,54 @@ export default function Page() {
           <div className="mt-3">
             <PlaylistButton user={user} />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-          <PlaylistCard playlists={playlists}/>
-          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+              {[1, 2, 3, 4, 5, 6].map((index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-2xl overflow-hidden shadow-md"
+                >
+                  {/* Thumbnail Skeleton */}
+                  <div className="relative aspect-video w-full bg-gray-200 animate-pulse overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skeleton-shine" />
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="p-6 space-y-4">
+                    {/* Title Skeleton */}
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 rounded-full w-3/4 animate-pulse" />
+                      <div className="h-4 bg-gray-200 rounded-full w-1/2 animate-pulse" />
+                    </div>
+
+                    {/* Info Row Skeleton */}
+                    <div className="flex gap-4">
+                      <div className="h-3 bg-gray-200 rounded-full w-20 animate-pulse" />
+                      <div className="h-3 bg-gray-200 rounded-full w-20 animate-pulse" />
+                    </div>
+
+                    {/* Action Bar Skeleton */}
+                    <div className="flex justify-between items-center pt-2">
+                      <div className="flex -space-x-2">
+                        {[...Array(3)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"
+                          />
+                        ))}
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+              <PlaylistCard playlists={playlists} />
+            </div>
+          )}
         </div>
       )}
     </>
