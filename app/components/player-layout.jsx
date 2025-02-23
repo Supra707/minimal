@@ -16,6 +16,65 @@ export default function PlayerLayout({ playlistId }) {
   const [isLoading, setisloading] = useState(false);
   const [playlist, setplaylist] = useState([]);
   const [title, settitle] = useState("");
+  const [durations, setDurations] = useState({});
+
+  async function getVideoInfo(videoId) {
+    const options = {
+      method: "GET",
+      url: "https://yt-api.p.rapidapi.com/video/info",
+      params: { id: videoId },
+      headers: {
+        "x-rapidapi-key": "b8dee9cb48mshcdf3b9dcfb365c8p1ae6e8jsnc937618846dd",
+        "x-rapidapi-host": "yt-api.p.rapidapi.com",
+      },
+    };
+
+    try {
+      const response = await axios.request(options);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching video info:", error);
+      return null;
+    }
+  }
+
+  async function fetchData(playlistId) {
+    if (!playlistId) return;
+    let allVideos = [];
+    let nextPageToken = "";
+
+    try {
+      do {
+        const response = await axios.get(
+          "https://youtube-v3-lite.p.rapidapi.com/playlistItems",
+          {
+            params: {
+              playlistId: playlistId,
+              part: "snippet",
+              maxResults: 50,
+              pageToken: nextPageToken,
+            },
+            headers: {
+              "x-rapidapi-key":
+                "b8dee9cb48mshcdf3b9dcfb365c8p1ae6e8jsnc937618846dd",
+              "x-rapidapi-host": "youtube-v3-lite.p.rapidapi.com",
+            },
+          }
+        );
+
+        allVideos = allVideos.concat(response.data[0].items);
+        nextPageToken = response.data[0].nextPageToken;
+      } while (nextPageToken);
+
+      setplaylist(allVideos);
+      localStorage.setItem("id", playlistId);
+      localStorage.setItem("playlist", JSON.stringify(allVideos));
+    } catch (error) {
+      console.error("Error fetching playlist:", error);
+    }
+  }
+
   async function getPlaylistTitle(playlistId) {
     try {
       const response = await fetch(
@@ -28,52 +87,7 @@ export default function PlayerLayout({ playlistId }) {
       console.error("Error fetching title:", error);
     }
   }
-
-
-  async function fetchData(playlistId) {
-    if (!playlistId) return; // Prevent API call with an empty ID
-    let allVideos = [];
-    let nextPageToken = "";
-
-    try {
-      setisloading(true);
-      do {
-        const response = await axios.request({
-          method: "GET",
-          url: "https://youtube-v3-lite.p.rapidapi.com/playlistItems",
-          params: {
-            playlistId: playlistId,
-            part: "snippet",
-            maxResults: 50, // Ensures API returns as many videos per request as possible
-            pageToken: nextPageToken, // Handle pagination
-          },
-          headers: {
-            "x-rapidapi-key":
-              "b8dee9cb48mshcdf3b9dcfb365c8p1ae6e8jsnc937618846dd",
-            "x-rapidapi-host": "youtube-v3-lite.p.rapidapi.com",
-          },
-        });
-        setisloading(false);
-        // Ensure response data structure is correct
-        console.log("API Response:", response.data[0]);
-
-        // Properly concatenate data to form a continuous array
-        allVideos = allVideos.concat(response.data[0].items);
-
-        // Update page token to fetch the next batch
-        nextPageToken = response.data[0].nextPageToken;
-      } while (nextPageToken); // Continue fetching if there's more data
-
-      // Save to localStorage AFTER all videos are fetched
-      localStorage.setItem("playlist", JSON.stringify(allVideos));
-      localStorage.setItem("id", playlistId);
-
-      setplaylist(allVideos); // Update UI with full playlist
-      setvideourl(allVideos[0].snippet.resourceId.videoId);
-    } catch (error) {
-      console.error("Error fetching playlist:", error);
-    }
-  }
+  
 
   useEffect(() => {
     console.log(playlistId);
@@ -92,16 +106,20 @@ export default function PlayerLayout({ playlistId }) {
       fetchData(playlistId);
     }
     getPlaylistTitle(playlistId);
+
   }, []); // Runs only when the component mounts or playlistId changes
   useEffect(() => {
     console.log(playlist);
+       
+    playlist.forEach((video) => {
+      console.log(getVideoInfo(video.snippet.resourceId.videoId));
+    });
   }, [playlist]);
 
   const handleVideoSelect = (videoId, index) => {
     setCurrentVideoIndex(index);
     setvideourl(videoId);
   };
-
   return (
     <div className="h-screen bg-gradient-to-br from-yellow-50 to-orange-50 flex flex-col">
       <style>
@@ -124,7 +142,9 @@ export default function PlayerLayout({ playlistId }) {
             Home
           </Button>
         </a>
-        <h2 className="font-semibold mx-auto text-xl text-yellow-800">{title}</h2>
+        <h2 className="font-semibold mx-auto text-xl text-yellow-800">
+          {title}
+        </h2>
       </div>
 
       <ResizablePanelGroup direction="horizontal" className="flex-1">
@@ -202,7 +222,10 @@ export default function PlayerLayout({ playlistId }) {
                       <span className="text-sm font-semibold text-yellow-600 w-6 text-right">
                         {index + 1}.
                       </span>
-
+                      <p className="text-xs text-gray-500">
+                        {durations[video.snippet.resourceId.videoId] ||
+                          "Loading..."}
+                      </p>
                       <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-yellow-100 shadow-md">
                         <img
                           src={video.snippet.thumbnails.high.url}
