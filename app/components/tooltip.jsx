@@ -5,6 +5,7 @@ import { Plus, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { db } from "../lib/firebaseConfig"; // Make sure the path is correct
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import axios from "axios";
 const PlaylistButton = ({ user }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
@@ -49,26 +50,29 @@ const PlaylistButton = ({ user }) => {
       console.error("Error fetching title:", error);
     }
   }
-  const getPlaylistThumbnail = async (playlistId) => {
+  async function getPlaylistThumbnail (playlistId){
     try {
-      const response = await fetch(`/api/playlist-thumbnail?playlistId=${playlistId}`);
-      const data = await response.json();
-  
-      if (data.thumbnailUrl) {
-        console.log("Playlist Thumbnail:", data.thumbnailUrl);
-        return data.thumbnailUrl; // Return the thumbnail URL
-      } else {
-        console.error("Error fetching thumbnail:", data.error);
-        return null;
-      }
+      const response = await axios.get(
+        "https://youtube-v3-lite.p.rapidapi.com/playlistItems",
+        {
+          params: {
+            playlistId: playlistId,
+            part: "snippet",
+            maxResults: 1,
+          },
+          headers: {
+            "x-rapidapi-key":
+              "b8dee9cb48mshcdf3b9dcfb365c8p1ae6e8jsnc937618846dd",
+            "x-rapidapi-host": "youtube-v3-lite.p.rapidapi.com",
+          },
+        }
+      );
+      return response.data[0].items[0].snippet.resourceId.videoId;
     } catch (error) {
       console.error("Error:", error);
       return null;
     }
   };
-  
-
-  // Example Usag
 
   const handleSubmit = async () => {
     if (!user) return; // Ensure user is authenticated
@@ -83,13 +87,14 @@ const PlaylistButton = ({ user }) => {
     console.log("Fetched Playlist Title:", playlistTitle);
 
     if (!playlistTitle) return; // Ensure the title is valid
+     // Await the playlist title from the async function
     const playlistThumbnail = await getPlaylistThumbnail(playlistId);
 
     // Creating the playlist object
     const newPlaylist = {
       id: playlistId, // Playlist ID
       title: playlistTitle, // Playlist Title
-      thumbnail: playlistThumbnail, // Playlist Thumbnail
+      thumbnail:`https://i4.ytimg.com/vi/${playlistThumbnail}/hqdefault.jpg`, // Playlist Thumbnail
     };
 
     const userDocRef = doc(db, "playlists", user.uid);
@@ -121,7 +126,7 @@ const PlaylistButton = ({ user }) => {
   };
 
   return (
-    <div className="relative font-sans flex flex-col items-center">
+    <div className="relative font-sans flex flex-col items-center z-[999]">
       {/* Add Playlist Button */}
       <motion.button
         onClick={() => setIsTooltipOpen((prev) => !prev)}

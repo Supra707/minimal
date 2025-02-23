@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { auth, signInWithGoogle, logout, db } from "../lib/firebaseConfig"; // Import Firestore database (db)
-import { collection, query, where, getDoc,doc } from "firebase/firestore"; // Import Firestore query functions
+import {  getDoc,doc } from "firebase/firestore"; // Import Firestore query functions
 import PlaylistButton from "../components/tooltip";
-
+import PlaylistCard from "../components/playlistcard";
 export default function Page() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [playlist, setplaylist] = useState([]);
+  const [playlists, setplaylist] = useState([]);
 
   useEffect(() => {
     // Listen for auth state changes
@@ -62,6 +62,7 @@ export default function Page() {
             const playlists = userDocSnap.data().items || []; // Default to an empty array if no playlists
 
             console.log("User's saved playlists:", playlists); // Log the playlists array
+            setplaylist(playlists);
           } else {
             console.log("No playlists found for this user.");
           }
@@ -161,11 +162,9 @@ export default function Page() {
           <div className="mt-3">
             <PlaylistButton user={user} />
           </div>
-          {/* <div>
-            {playlist.map((video, index) => {
-              return <div key={index}>{video}</div>;
-            })}
-          </div> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+          <PlaylistCard playlists={playlists}/>
+          </div>
         </div>
       )}
     </>
