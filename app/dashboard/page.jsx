@@ -4,53 +4,28 @@ import { auth, signInWithGoogle, logout, db } from "../lib/firebaseConfig"; // I
 import { getDoc, doc } from "firebase/firestore"; // Import Firestore query functions
 import PlaylistButton from "../components/tooltip";
 import PlaylistCard from "../components/playlistcard";
+
 export default function Page() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Set initial loading state to true
   const [error, setError] = useState("");
-  const [playlists, setplaylist] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
 
   useEffect(() => {
     // Listen for auth state changes
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setLoading(true); // Set loading to true whenever auth state changes
       if (currentUser) {
         setUser(currentUser);
       } else {
         setUser(null);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
 
-  const handleLogin = async () => {
-    setError("");
-    setLoading(true);
-    try {
-      const loggedInUser = await signInWithGoogle();
-      if (loggedInUser) {
-        setUser(loggedInUser);
-      }
-    } catch (err) {
-      setError("Failed to sign in. Please try again.");
-    }
-    setLoading(false);
-  };
-
-  const handleLogout = async () => {
-    setLoading(true);
-    try {
-      await logout();
-      setUser(null);
-    } catch (err) {
-      setError("Error signing out. Try again.");
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    setLoading(true);
     const fetchPlaylists = async () => {
       if (user) {
         try {
@@ -62,20 +37,48 @@ export default function Page() {
             // If the document exists, access the 'items' array from the document
             const playlists = userDocSnap.data().items || []; // Default to an empty array if no playlists
 
-            console.log("User's saved playlists:", playlists); // Log the playlists array
-            setplaylist(playlists);
-            setLoading(false);
+            setPlaylists(playlists);
           } else {
             console.log("No playlists found for this user.");
           }
         } catch (error) {
           console.error("Error fetching playlists:", error);
+          setError("Failed to load playlists. Please try again.");
+        } finally {
+          setLoading(false); // Ensure loading state is set to false after fetching data
         }
       }
     };
 
     fetchPlaylists();
   }, [user]); // Run effect when user state changes
+
+  const handleLogin = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const loggedInUser = await signInWithGoogle();
+      if (loggedInUser) {
+        setUser(loggedInUser);
+      }
+    } catch (err) {
+      setError("Failed to sign in. Please try again.");
+    } finally {
+      setLoading(false); // Ensure loading state is set to false after login attempt
+    }
+  };
+
+  const handleLogout = async () => {
+    setLoading(true); // Set loading to true during logout
+    try {
+      await logout();
+      setUser(null);
+    } catch (err) {
+      setError("Error signing out. Try again.");
+    } finally {
+      setLoading(false); // Ensure loading state is set to false after logout attempt
+    }
+  };
 
   return (
     <>
@@ -84,9 +87,7 @@ export default function Page() {
           <h1 className="text-xl font-semibold">FocusGate</h1>
         </a>
 
-        {loading ? (
-          <p className="animate-pulse font-bold">Checking auth...</p>
-        ) : user ? (
+        {user ? (
           <div className="flex items-center gap-3">
             <img
               src={user.photoURL}
@@ -104,32 +105,7 @@ export default function Page() {
         ) : (
           <button
             onClick={handleLogin}
-            className={`
-            group
-            relative
-            flex
-            items-center
-            gap-3
-            px-2
-            py-2
-            rounded-md
-            font-medium
-            text-white
-            overflow-hidden
-            transition-all
-            duration-300
-            transform
-            hover:scale-105
-            active:scale-95
-            disabled:opacity-70
-            disabled:cursor-not-allowed
-            bg-gradient-to-r
-            from-yellow-400
-            via-orange-500
-            to-red-500
-            shadow-lg
-            hover:shadow-xl
-          `}
+            className={`group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`}
           >
             <div className="w-6 h-6 bg-white rounded-full p-1 flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-4 h-4">
@@ -152,7 +128,6 @@ export default function Page() {
               </svg>
             </div>
             <span className="text-lg">{"Sign in with Google"}</span>
-            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
         )}
 
@@ -207,9 +182,18 @@ export default function Page() {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : playlists.length !== 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
               <PlaylistCard playlists={playlists} />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-12 text-center bg-transparent rounded-lg">
+              <p className="text-xl font-semibold text-gray-700 mb-2">
+                No Playlists Found
+              </p>
+              <p className="text-gray-500">
+                Start creating your first playlist to see it here
+              </p>
             </div>
           )}
         </div>
