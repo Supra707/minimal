@@ -6,8 +6,15 @@ import {
 } from "./ui/resizable";
 import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
-import { ChevronRight, ChevronLeft, PlayCircle, Home } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  PlayCircle,
+  Home,
+  Play,
+} from "lucide-react";
 import axios from "axios";
+import ReactPlayer from "react-player";
 
 export default function PlayerLayout({ playlistId }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -66,7 +73,6 @@ export default function PlayerLayout({ playlistId }) {
       console.error("Error fetching title:", error);
     }
   }
-  
 
   useEffect(() => {
     console.log(playlistId);
@@ -77,19 +83,19 @@ export default function PlayerLayout({ playlistId }) {
       if (list) {
         const list2 = JSON.parse(list);
         setplaylist(list2); // Convert JSON string back to an array
-
-        setvideourl(list2[0].snippet.resourceId.videoId);
       }
     } else {
       console.log("not equal to previous");
       fetchData(playlistId);
     }
     getPlaylistTitle(playlistId);
-
   }, []); // Runs only when the component mounts or playlistId changes
 
   useEffect(() => {
     console.log(playlist);
+    if (playlist.length >= 1) {
+      setvideourl(playlist[0].snippet.resourceId.videoId);
+    }
   }, [playlist]);
 
   const handleVideoSelect = (videoId, index) => {
@@ -130,12 +136,30 @@ export default function PlayerLayout({ playlistId }) {
           className={collapsed ? "w-full" : ""}
         >
           <div className="w-full h-full relative rounded-lg overflow-hidden m-2 shadow-xl">
-            <iframe
-              src={`https://www.youtube.com/embed/${url}?autoplay=1&controls=1&modestbranding=1&rel=0&fs=1&showinfo=0&iv_load_policy=3&disablekb=1&playsinline=1`}
-              className="absolute inset-0 w-full h-full"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-            />
+            {isLoading ? (
+              <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+                <div className="relative">
+                  {/* Outer pulsing circle */}
+                  <div className="absolute inset-0 rounded-full bg-white/30 animate-ping" />
+
+                  {/* Inner circle with play icon */}
+                  <div className="relative w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                    <Play className="w-8 h-8 text-gray-900" />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="absolute inset-0">
+                <ReactPlayer
+                  url={`https://www.youtube.com/watch?v=${url}`}
+                  controls
+                  playing
+                  width="100%"
+                  height="100%"
+                  style={{ position: "absolute", top: 0, left: 0 }}
+                />
+              </div>
+            )}
           </div>
         </ResizablePanel>
 
@@ -197,7 +221,7 @@ export default function PlayerLayout({ playlistId }) {
                       <span className="text-sm font-semibold text-yellow-600 w-6 text-right">
                         {index + 1}.
                       </span>
-                     
+
                       <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-yellow-100 shadow-md">
                         <img
                           src={video.snippet.thumbnails.high.url}
