@@ -16,35 +16,13 @@ export default function PlayerLayout({ playlistId }) {
   const [isLoading, setisloading] = useState(false);
   const [playlist, setplaylist] = useState([]);
   const [title, settitle] = useState("");
-  const [durations, setDurations] = useState({});
-
-  async function getVideoInfo(videoId) {
-    const options = {
-      method: "GET",
-      url: "https://yt-api.p.rapidapi.com/video/info",
-      params: { id: videoId },
-      headers: {
-        "x-rapidapi-key": "b8dee9cb48mshcdf3b9dcfb365c8p1ae6e8jsnc937618846dd",
-        "x-rapidapi-host": "yt-api.p.rapidapi.com",
-      },
-    };
-
-    try {
-      const response = await axios.request(options);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching video info:", error);
-      return null;
-    }
-  }
-
   async function fetchData(playlistId) {
     if (!playlistId) return;
     let allVideos = [];
     let nextPageToken = "";
 
     try {
+      setisloading(true);
       do {
         const response = await axios.get(
           "https://youtube-v3-lite.p.rapidapi.com/playlistItems",
@@ -70,6 +48,7 @@ export default function PlayerLayout({ playlistId }) {
       setplaylist(allVideos);
       localStorage.setItem("id", playlistId);
       localStorage.setItem("playlist", JSON.stringify(allVideos));
+      setisloading(false);
     } catch (error) {
       console.error("Error fetching playlist:", error);
     }
@@ -108,12 +87,9 @@ export default function PlayerLayout({ playlistId }) {
     getPlaylistTitle(playlistId);
 
   }, []); // Runs only when the component mounts or playlistId changes
+
   useEffect(() => {
     console.log(playlist);
-       
-    playlist.forEach((video) => {
-      console.log(getVideoInfo(video.snippet.resourceId.videoId));
-    });
   }, [playlist]);
 
   const handleVideoSelect = (videoId, index) => {
@@ -157,7 +133,6 @@ export default function PlayerLayout({ playlistId }) {
             <iframe
               src={`https://www.youtube.com/embed/${url}?autoplay=1&controls=1&modestbranding=1&rel=0&fs=1&showinfo=0&iv_load_policy=3&disablekb=1&playsinline=1`}
               className="absolute inset-0 w-full h-full"
-              frameBorder="0"
               allow="autoplay; encrypted-media"
               allowFullScreen
             />
@@ -222,10 +197,7 @@ export default function PlayerLayout({ playlistId }) {
                       <span className="text-sm font-semibold text-yellow-600 w-6 text-right">
                         {index + 1}.
                       </span>
-                      <p className="text-xs text-gray-500">
-                        {durations[video.snippet.resourceId.videoId] ||
-                          "Loading..."}
-                      </p>
+                     
                       <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-yellow-100 shadow-md">
                         <img
                           src={video.snippet.thumbnails.high.url}
