@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "FocusTube - Minimalist YouTube for Studying",
+  title: "FocusGate - Minimalist YouTube for Studying",
   description: "A distraction-free YouTube experience for focused learning. No ads, no recommendations—just pure content.",
 };
 
