@@ -121,7 +121,7 @@ export default function PlayerLayout({ playlistId }) {
             className="bg-yellow-500 hover:bg-yellow-600 text-white transition-all duration-300 hover:scale-105 flex gap-2 items-center"
           >
             <Home className="w-4 h-4" />
-            Home
+            Dashboard
           </Button>
         </a>
         <h2 className="font-semibold mx-auto text-xl text-yellow-800">

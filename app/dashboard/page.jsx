@@ -10,7 +10,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true); // Set initial loading state to true
   const [error, setError] = useState("");
   const [playlists, setPlaylists] = useState([]);
-
+  const[signinloading,setsigninloading]=useState(false);
   useEffect(() => {
     // Listen for auth state changes
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
@@ -55,7 +55,7 @@ export default function Page() {
 
   const handleLogin = async () => {
     setError("");
-    setLoading(true);
+    setsigninloading(true);
     try {
       const loggedInUser = await signInWithGoogle();
       if (loggedInUser) {
@@ -64,7 +64,7 @@ export default function Page() {
     } catch (err) {
       setError("Failed to sign in. Please try again.");
     } finally {
-      setLoading(false); // Ensure loading state is set to false after login attempt
+      setsigninloading(false); // Ensure loading state is set to false after login attempt
     }
   };
 
@@ -84,7 +84,7 @@ export default function Page() {
     <>
       <div className="flex justify-between items-center p-4 bg-gray-900 text-white">
         <a href="/" className="cursor-pointer">
-          <h1 className="text-xl font-semibold">FocusGate</h1>
+          <h1 className="text-xl font-semibold p-4 transition all text-black hover:scale-95 duration-2000 w-full bg-yellow-300"><span className="text-blue-600 font-bold">FocusGate</span> :Focus on Gate 2026 and nothing else</h1>
         </a>
 
         {user ? (
@@ -105,7 +105,8 @@ export default function Page() {
         ) : (
           <button
             onClick={handleLogin}
-            className={`group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`}
+            disabled={signinloading}
+            className={signinloading?(`group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`):(`group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`)}
           >
             <div className="w-6 h-6 bg-white rounded-full p-1 flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-4 h-4">
