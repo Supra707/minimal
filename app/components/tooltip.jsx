@@ -208,7 +208,7 @@ const PlaylistButton = ({ user }) => {
                   Your playlists are{" "}
                   <span className="text-gray-800">automatically saved</span> in
                   the cloud. Click the{" "}
-                  <span className="text-gray-800">home button</span> in the
+                  <span className="text-gray-800"><b>Dashboard</b> button</span> in the
                   player to return to your dashboard anytime.
                 </span>
               </div>

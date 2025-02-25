@@ -6,6 +6,7 @@ import PlaylistButton from "../components/tooltip";
 import PlaylistCard from "../components/playlistcard";
 import GoogleLogin from "../components/googlelogin";
 import { useRouter } from "next/navigation";
+import { BookOpen,PlusCircle } from "lucide-react";
 export default function Page() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Set initial loading state to true
@@ -169,14 +170,27 @@ export default function Page() {
               <PlaylistCard playlists={playlists} userId={user.uid} />
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-12 text-center bg-transparent rounded-lg">
-              <p className="text-xl font-semibold text-gray-700 mb-2">
-                No Playlists Found
-              </p>
-              <p className="text-gray-500">
-                Start creating your first playlist to see it here
-              </p>
+            <div className="mt-4 flex flex-col items-center justify-center p-8 text-center bg-gray-50 rounded-lg w-full max-w-md mx-auto">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <BookOpen size={120} />
+              </div>
+              <div className="relative z-10 flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-md">
+                <BookOpen size={48} className="text-blue-500 mb-2" />
+                <PlusCircle size={24} className="text-blue-600 absolute bottom-4 right-4" />
+              </div>
             </div>
+            
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+              No Study Playlists Found
+            </h2>
+            
+            <p className="text-gray-600 mb-6 max-w-xs">
+              Your study playlists are waiting to be organized. Start creating your first study playlist to see it here.
+            </p>
+            
+            
+          </div>
           )}
         </div>
       )}
