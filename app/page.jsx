@@ -28,7 +28,6 @@ const Page = () => {
     );
   }
 
-
   const containerVariants = {
     hidden: { opacity: 0, y: 100 },
     visible: {
@@ -55,18 +54,39 @@ const Page = () => {
           className="text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-orange-600 font-extrabold tracking-tight text-5xl drop-shadow-lg"
           variants={childVariants}
         >
-          Your Focused YouTube Experience – No Distractions, Just Learning.
+          Focus. Learn. Succeed.
         </motion.h1>
         <motion.p
           className="text-transparent bg-clip-text bg-gradient-to-r from-violet-700 to-orange-500 font-bold tracking-tight text-2xl drop-shadow-md"
           variants={childVariants}
         >
-          Seamlessly Browse Playlists with a Clean & Minimal UI.
+          No distractions. Just your playlists.
         </motion.p>
       </motion.div>
 
       <motion.div className="mt-8" variants={childVariants}>
         <GoogleLogin />
+      </motion.div>
+
+      {/* Advertisement Section */}
+      <motion.div className="mt-12 text-center max-w-2xl space-y-4" variants={childVariants}>
+        <motion.h2
+          className="text-gray-800 dark:text-white text-3xl font-extrabold"
+          variants={childVariants}
+        >
+          🚀 FocusGate – Study Without Distractions 🎯
+        </motion.h2>
+        <motion.p className="text-gray-600 dark:text-gray-300 text-lg" variants={childVariants}>
+          ✅ <strong>Minimal UI</strong> – No ads, no clutter.  
+          <br />
+          ✅ <strong>One-Click Sign-In</strong> – Google login for instant access.  
+          <br />
+          ✅ <strong>Save & Organize</strong> – Keep track of your study playlists.  
+          <br />
+          ✅ <strong>Smooth Animations</strong> – Fast, clean, and responsive.  
+          <br />
+          ✅ <strong>Dashboard Access</strong> – Everything you need in one place.  
+        </motion.p>
       </motion.div>
     </motion.div>
   );
