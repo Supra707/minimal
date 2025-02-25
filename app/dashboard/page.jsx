@@ -175,7 +175,7 @@ export default function Page() {
               <div className="absolute inset-0 flex items-center justify-center opacity-10">
                 <BookOpen size={120} />
               </div>
-              <div className="relative z-10 flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-md">
+              <div className="relative z-10 flex flex-col items-center justify-center bg-white p-6 rounded-md ">
                 <BookOpen size={48} className="text-blue-500 mb-2" />
                 <PlusCircle size={24} className="text-blue-600 absolute bottom-4 right-4" />
               </div>
@@ -188,8 +188,6 @@ export default function Page() {
             <p className="text-gray-600 mb-6 max-w-xs">
               Your study playlists are waiting to be organized. Start creating your first study playlist to see it here.
             </p>
-            
-            
           </div>
           )}
         </div>
