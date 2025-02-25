@@ -10,7 +10,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true); // Set initial loading state to true
   const [error, setError] = useState("");
   const [playlists, setPlaylists] = useState([]);
-  const[signinloading,setsigninloading]=useState(false);
+  const [signinloading, setsigninloading] = useState(false);
   useEffect(() => {
     // Listen for auth state changes
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
@@ -84,20 +84,25 @@ export default function Page() {
     <>
       <div className="flex justify-between items-center p-4 bg-gray-900 text-white">
         <a href="/" className="cursor-pointer">
-          <h1 className="text-xl font-semibold p-4 transition all text-black hover:scale-95 duration-2000 w-full bg-yellow-300"><span className="text-blue-600 font-bold">FocusGate</span> :Focus on Gate 2026 and nothing else</h1>
+          <h1 className="text-xl font-semibold p-4 transition all text-black hover:scale-95 duration-2000 w-full bg-yellow-300">
+            <span className="text-blue-600 font-bold">FocusGate</span> :Focus on
+            Gate 2026 and nothing else
+          </h1>
         </a>
 
         {user ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4 bg-gray-100 p-2 rounded-lg shadow-md">
             <img
               src={user.photoURL}
               alt="User Avatar"
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm"
             />
-            <p>{user.displayName}</p>
+            <p className="text-lg font-semibold text-gray-800">
+              {user.displayName}
+            </p>
             <button
               onClick={handleLogout}
-              className="bg-red-500 px-3 py-1 rounded"
+              className="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-600 transition duration-200 shadow-md"
             >
               Logout
             </button>
@@ -106,7 +111,11 @@ export default function Page() {
           <button
             onClick={handleLogin}
             disabled={signinloading}
-            className={signinloading?(`group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`):(`group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`)}
+            className={
+              signinloading
+                ? `group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`
+                : `group relative flex items-center gap-3 px-2 py-2 rounded-md font-medium text-white overflow-hidden transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 shadow-lg hover:shadow-xl`
+            }
           >
             <div className="w-6 h-6 bg-white rounded-full p-1 flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-4 h-4">
@@ -185,7 +194,7 @@ export default function Page() {
             </div>
           ) : playlists.length !== 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-              <PlaylistCard playlists={playlists} />
+              <PlaylistCard playlists={playlists} userId={user.uid} />
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center p-12 text-center bg-transparent rounded-lg">
