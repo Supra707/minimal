@@ -5,13 +5,13 @@ import { getDoc, doc } from "firebase/firestore"; // Import Firestore query func
 import PlaylistButton from "../components/tooltip";
 import PlaylistCard from "../components/playlistcard";
 import GoogleLogin from "../components/googlelogin";
-
+import { useRouter } from "next/navigation";
 export default function Page() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Set initial loading state to true
   const [error, setError] = useState("");
   const [playlists, setPlaylists] = useState([]);
-  const [signinloading, setsigninloading] = useState(false);
+  const router=useRouter();
   useEffect(() => {
     // Listen for auth state changes
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
@@ -78,6 +78,7 @@ export default function Page() {
       setError("Error signing out. Try again.");
     } finally {
       setLoading(false); // Ensure loading state is set to false after logout attempt
+      router.push('/');
     }
   };
 
