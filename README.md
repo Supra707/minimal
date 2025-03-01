@@ -4,7 +4,9 @@
 ![FocusGate Banner-2](https://github.com/user-attachments/assets/3d31c504-71ec-4036-bdfe-12b4a4900208)
 
 ## 🚀 Overview
-FocusGate is a **distraction-free YouTube playlist web app** designed for students and professionals who want to **stay focused** while watching educational videos. Say goodbye to recommendations, ads, and unnecessary UI clutter—**just your videos, nothing else.**
+FocusGate is a **distraction-free YouTube playlist web app** designed for students, professionals, and anyone who wants to **stay focused** while consuming educational content. Unlike traditional YouTube, which bombards users with recommendations, ads, and autoplay distractions, FocusGate provides a **clean and minimal** environment where you can concentrate solely on your study materials or work-related videos. Whether you're preparing for an exam, upskilling, or deep-diving into tutorials, FocusGate ensures a seamless, **uninterrupted** learning experience. 
+
+With **Google Sign-In**, users can **save and sync their playlists** across devices, making study sessions more efficient. **Upcoming features**, such as **watch tracking** and **collaborative playlists**, will further enhance productivity, making FocusGate the ultimate tool for distraction-free learning.
 
 ## ✨ Features
 - 🎯 **Minimalist UI** - No distractions, just your playlists.
@@ -37,8 +39,7 @@ FocusGate is a **distraction-free YouTube playlist web app** designed for studen
   npm install
 ```
 ### **3️⃣ Set up environment variables**
-Have to setup Firebase autenticaion in the firebaseconfig.js inside the app/lib directory
-
+Have to setup Firebase auth key inside the `firebaseconfig.js` inside the `app/lib/firebaseconfig.js`
 ### **4️⃣ Run the development server**
 ```bash
   npm run dev
@@ -63,4 +64,3 @@ MIT License. Free to use and modify.
 
 ---
 🚀 **FocusGate - Your Study. Your Rules.**
-
