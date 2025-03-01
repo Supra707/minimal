@@ -1,6 +1,7 @@
 # FocusGate 🎯 - Minimalist Distraction-Free YouTube Playlist Player
 
-![FocusGate Banner](https://postimg.cc/wy1mZNfz)
+![FocusGate Banner](https://github.com/user-attachments/assets/d450c039-a276-4eaa-a521-6e81ea7a9ccb)
+
 
 ## 🚀 Overview
 FocusGate is a **distraction-free YouTube playlist web app** designed for students and professionals who want to **stay focused** while watching educational videos. Say goodbye to recommendations, ads, and unnecessary UI clutter—**just your videos, nothing else.**
