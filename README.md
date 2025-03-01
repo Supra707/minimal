@@ -38,7 +38,7 @@ FocusGate is a **distraction-free YouTube playlist web app** designed for studen
 ```
 ### **3️⃣ Set up environment variables**
 Have to setup Firebase autenticaion in the firebaseconfig.js inside the app/lib directory
-```
+
 ### **4️⃣ Run the development server**
 ```bash
   npm run dev
