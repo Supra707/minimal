@@ -39,7 +39,7 @@ With **Google Sign-In**, users can **save and sync their playlists** across devi
   npm install
 ```
 ### **3️⃣ Set up environment variables**
-Have to setup Firebase auth key inside the `firebaseconfig.js` inside the `app/lib/firebaseconfig.js`
+Have to setup Firebase auth key inside the `firebaseConfig.js` inside the `app/lib/firebaseConfig.js`
 ### **4️⃣ Run the development server**
 ```bash
   npm run dev
