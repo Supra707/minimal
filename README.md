@@ -24,8 +24,8 @@ FocusGate is a **distraction-free YouTube playlist web app** designed for studen
 ## 📜 Installation
 ### **1️⃣ Clone the repository**
 ```bash
-  git clone https://github.com/yourusername/focusgate.git
-  cd focusgate
+  git clone https://github.com/Supra707/minimal.git
+  cd minimal
 ```
 ### **2️⃣ Install dependencies**
 ```bash
