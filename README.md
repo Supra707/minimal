@@ -3,23 +3,28 @@
 ![FocusGate Banner-1](https://github.com/user-attachments/assets/d450c039-a276-4eaa-a521-6e81ea7a9ccb)
 ![FocusGate Banner-2](https://github.com/user-attachments/assets/3d31c504-71ec-4036-bdfe-12b4a4900208)
 
-
 ## 🚀 Overview
 FocusGate is a **distraction-free YouTube playlist web app** designed for students and professionals who want to **stay focused** while watching educational videos. Say goodbye to recommendations, ads, and unnecessary UI clutter—**just your videos, nothing else.**
 
 ## ✨ Features
 - 🎯 **Minimalist UI** - No distractions, just your playlists.
+- 🚫 **100% Ad-Free Experience** - Study without interruptions.
 - 🔥 **Google Sign-In** - Quick and easy authentication.
 - 📂 **Save & Sync Playlists** - Access your study materials anytime.
 - 📊 **Tracking (Upcoming)** - Keep track of watched content.
 - 🤝 **Collaborative Playlists (Future Plan)** - Share with friends.
 - 📱 **PWA Support (Planned)** - Install it as an app for seamless use.
+- ⚡ **Optimized Performance** - Built with Next.js 15 and Turbopack for blazing-fast load times.
+- 🔍 **No Unnecessary Distractions** - No autoplay, no recommendations, no unrelated content—just what you need.
 
 ## 🛠 Tech Stack
-- **Frontend:** Next.js 15 (App Router, Turbopack)
-- **Backend:** Firebase (Authentication, Firestore)
-- **Styling:** Custom CSS (No external UI kits)
-- **APIs:** YouTube API (Limited to study-focused content)
+- **Frontend:** Next.js 15 (App Router, Turbopack) for modern, efficient rendering.
+- **Backend:** Firebase (Authentication, Firestore) for seamless user data storage and sync.
+- **Styling:** Custom CSS (No external UI kits) to maintain a lightweight and clean design.
+- **APIs:** YouTube API (Limited to study-focused content) for fetching playlist details while ensuring privacy-focused data handling.
+- **Authentication:** Firebase OAuth for hassle-free sign-ins.
+- **State Management:** React Hooks & Context API for efficient app state handling.
+- **Progressive Web App (PWA) Support:** Future integration for app-like usability.
 
 ## 📜 Installation
 ### **1️⃣ Clone the repository**
@@ -32,10 +37,7 @@ FocusGate is a **distraction-free YouTube playlist web app** designed for studen
   npm install
 ```
 ### **3️⃣ Set up environment variables**
-Create a `.env.local` file and add your Firebase & YouTube API keys:
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_key
-NEXT_PUBLIC_YOUTUBE_API_KEY=your_youtube_key
+Have to setup Firebase autenticaion in the firebaseconfig.js inside the app/lib directory
 ```
 ### **4️⃣ Run the development server**
 ```bash
