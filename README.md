@@ -1,6 +1,7 @@
 # FocusGate 🎯 - Minimalist Distraction-Free YouTube Playlist Player
 
-![FocusGate Banner](https://github.com/user-attachments/assets/d450c039-a276-4eaa-a521-6e81ea7a9ccb)
+![FocusGate Banner-1](https://github.com/user-attachments/assets/d450c039-a276-4eaa-a521-6e81ea7a9ccb)
+![FocusGate Banner-2](https://github.com/user-attachments/assets/3d31c504-71ec-4036-bdfe-12b4a4900208)
 
 
 ## 🚀 Overview
