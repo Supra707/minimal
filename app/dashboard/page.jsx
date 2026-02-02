@@ -89,7 +89,7 @@ export default function Page() {
         <a href="/" className="cursor-pointer">
           <h1 className="text-xl font-semibold p-4 transition all text-black hover:scale-95 duration-2000 w-full bg-yellow-300">
             <span className="text-blue-600 font-bold">FocusGate</span> :Focus on
-            Gate 2026 and nothing else
+            Gate 2027 and nothing else
           </h1>
         </a>
 

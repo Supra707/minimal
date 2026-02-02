@@ -150,14 +150,14 @@ export default function PlayerLayout({ playlistId }) {
               </div>
             ) : (
               <div className="absolute inset-0">
-                <ReactPlayer
+                <video>
                   url={`https://www.youtube.com/watch?v=${url}`}
                   controls
                   playing
                   width="100%"
                   height="100%"
                   style={{ position: "absolute", top: 0, left: 0 }}
-                />
+                </video>
               </div>
             )}
           </div>
