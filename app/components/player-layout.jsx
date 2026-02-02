@@ -150,14 +150,14 @@ export default function PlayerLayout({ playlistId }) {
               </div>
             ) : (
               <div className="absolute inset-0">
-                <video>
+                <ReactPlayer
                   url={`https://www.youtube.com/watch?v=${url}`}
                   controls
-                  playing
+                  playing={false}
                   width="100%"
                   height="100%"
                   style={{ position: "absolute", top: 0, left: 0 }}
-                </video>
+                />
               </div>
             )}
           </div>
@@ -172,9 +172,8 @@ export default function PlayerLayout({ playlistId }) {
           defaultSize={25}
           minSize={20}
           maxSize={40}
-          className={`transition-all duration-300 ${
-            collapsed ? "w-0 hidden" : ""
-          }`}
+          className={`transition-all duration-300 ${collapsed ? "w-0 hidden" : ""
+            }`}
         >
           <div className="h-full flex flex-col bg-white/50 backdrop-blur-sm">
             <div className="flex items-center justify-between p-1 border-b border-yellow-200">
@@ -212,11 +211,10 @@ export default function PlayerLayout({ playlistId }) {
                           index
                         )
                       }
-                      className={`relative w-full p-2 rounded-lg flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] ${
-                        index === currentVideoIndex
+                      className={`relative w-full p-2 rounded-lg flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] ${index === currentVideoIndex
                           ? "bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-400 shadow-lg"
                           : "hover:bg-yellow-50"
-                      }`}
+                        }`}
                     >
                       <span className="text-sm font-semibold text-yellow-600 w-6 text-right">
                         {index + 1}.
@@ -238,11 +236,10 @@ export default function PlayerLayout({ playlistId }) {
 
                       <div className="flex-1 min-w-0 text-left">
                         <p
-                          className={`text-sm leading-tight ${
-                            index === currentVideoIndex
+                          className={`text-sm leading-tight ${index === currentVideoIndex
                               ? "text-yellow-800 font-medium"
                               : "text-gray-700"
-                          }`}
+                            }`}
                         >
                           {video.snippet.title}
                         </p>
