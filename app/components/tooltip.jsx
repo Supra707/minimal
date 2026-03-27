@@ -10,7 +10,7 @@ const PlaylistButton = ({ user }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const[loading,setloading]=useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
-  const [isValidUrl, setIsValidUrl] = useState(false);
+  const [isValidUrl, setIsValidUrl] = useState(true);
   const tooltipRef = useRef(null);
   const inputRef = useRef(null);
   const router = useRouter();
