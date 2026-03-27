@@ -1,25 +1,27 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Play,Loader} from "lucide-react";
+import { Plus, Play, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { db } from "../lib/firebaseConfig"; // Make sure the path is correct
+import { db } from "../lib/firebaseConfig";
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import axios from "axios";
+
 const PlaylistButton = ({ user }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const[loading,setloading]=useState(false);
+  const [loading, setLoading] = useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
-  const [isValidUrl, setIsValidUrl] = useState(true);
+  const [isValidUrl, setIsValidUrl] = useState(true); // FIX: default true (neutral state, no error shown)
   const tooltipRef = useRef(null);
   const inputRef = useRef(null);
   const router = useRouter();
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
         setIsTooltipOpen(false);
         setPlaylistUrl("");
-        setIsValidUrl(false);
+        setIsValidUrl(true); // FIX: reset to true so no stale error on reopen
       }
     };
 
@@ -27,10 +29,19 @@ const PlaylistButton = ({ user }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // FIX: Regex now allows extra query params like &si=, &index=, etc.
   const validatePlaylistUrl = (url) => {
-    const playlistRegex =
-      /^https:\/\/www\.youtube\.com\/playlist\?list=[a-zA-Z0-9_-]+$/;
-    return playlistRegex.test(url);
+    try {
+      const parsed = new URL(url);
+      return (
+        (parsed.hostname === "www.youtube.com" ||
+          parsed.hostname === "youtube.com") &&
+        parsed.pathname === "/playlist" &&
+        /^[a-zA-Z0-9_-]+$/.test(parsed.searchParams.get("list") || "")
+      );
+    } catch {
+      return false;
+    }
   };
 
   const handleUrlChange = (e) => {
@@ -49,9 +60,11 @@ const PlaylistButton = ({ user }) => {
       return data.title;
     } catch (error) {
       console.error("Error fetching title:", error);
+      return null;
     }
   }
-  async function getPlaylistThumbnail (playlistId){
+
+  async function getPlaylistThumbnail(playlistId) {
     try {
       const response = await axios.get(
         "https://youtube-v3-lite.p.rapidapi.com/playlistItems",
@@ -68,35 +81,47 @@ const PlaylistButton = ({ user }) => {
           },
         }
       );
-      return response.data[0].items[0].snippet.resourceId.videoId;
+      // FIX: response.data is the object, not an array — removed [0]
+      return response.data.items[0].snippet.resourceId.videoId;
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching thumbnail:", error);
       return null;
     }
-  };
+  }
 
   const handleSubmit = async () => {
-    setloading(true);
-    if (!user) return; // Ensure user is authenticated
+    if (!user) return;
 
-    const urlParams = new URLSearchParams(new URL(playlistUrl).search);
-    const playlistId = urlParams.get("list");
+    setLoading(true);
 
-    if (!playlistId) return;
+    let playlistId;
+    try {
+      const urlParams = new URLSearchParams(new URL(playlistUrl).search);
+      playlistId = urlParams.get("list");
+    } catch {
+      setLoading(false); // FIX: reset loading if URL parsing fails
+      return;
+    }
 
-    // Await the playlist title from the async function
+    if (!playlistId) {
+      setLoading(false); // FIX: reset loading on early return
+      return;
+    }
+
     const playlistTitle = await getPlaylistTitle(playlistId);
     console.log("Fetched Playlist Title:", playlistTitle);
 
-    if (!playlistTitle) return; // Ensure the title is valid
-     // Await the playlist title from the async function
+    if (!playlistTitle) {
+      setLoading(false); // FIX: reset loading on early return
+      return;
+    }
+
     const playlistThumbnail = await getPlaylistThumbnail(playlistId);
 
-    // Creating the playlist object
     const newPlaylist = {
-      id: playlistId, // Playlist ID
-      title: playlistTitle, // Playlist Title
-      thumbnail:`https://i4.ytimg.com/vi/${playlistThumbnail}/hqdefault.jpg`, // Playlist Thumbnail
+      id: playlistId,
+      title: playlistTitle,
+      thumbnail: `https://i4.ytimg.com/vi/${playlistThumbnail}/hqdefault.jpg`,
     };
 
     const userDocRef = doc(db, "playlists", user.uid);
@@ -105,27 +130,25 @@ const PlaylistButton = ({ user }) => {
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
-        // If the document exists, update the "items" array with the new playlist
         await updateDoc(userDocRef, {
-          items: arrayUnion(newPlaylist), // Adding new playlist object to the "items" array
+          items: arrayUnion(newPlaylist),
         });
       } else {
-        // If the document does not exist, create a new document with the first playlist
         await setDoc(userDocRef, {
           userId: user.uid,
-          items: [newPlaylist], // First playlist for new user
+          items: [newPlaylist],
         });
       }
 
       console.log("Playlist stored:", newPlaylist);
       setIsTooltipOpen(false);
       setPlaylistUrl("");
-      setIsValidUrl(false);
-      setloading(false);
+      setIsValidUrl(true); // FIX: reset to true (neutral), not false
+      setLoading(false);
       router.push(`/play/${playlistId}`);
-    
     } catch (error) {
       console.error("Error updating playlist:", error);
+      setLoading(false); // FIX: reset loading on Firestore error
     }
   };
 
@@ -208,8 +231,10 @@ const PlaylistButton = ({ user }) => {
                   Your playlists are{" "}
                   <span className="text-gray-800">automatically saved</span> in
                   the cloud. Click the{" "}
-                  <span className="text-gray-800"><b>Dashboard</b> button</span> in the
-                  player to return to your dashboard anytime.
+                  <span className="text-gray-800">
+                    <b>Dashboard</b> button
+                  </span>{" "}
+                  in the player to return to your dashboard anytime.
                 </span>
               </div>
             </div>
@@ -228,22 +253,28 @@ const PlaylistButton = ({ user }) => {
               />
               <motion.button
                 onClick={handleSubmit}
-                disabled={!isValidUrl}
+                disabled={!isValidUrl || loading}
                 className={`p-2 rounded-lg transition-all duration-300 transform w-full text-center flex items-center justify-center gap-2 ${
-                  isValidUrl
+                  isValidUrl && !loading
                     ? "bg-orange-500 text-white hover:bg-orange-600 hover:scale-105 active:scale-95"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
-                whileTap={isValidUrl ? { scale: 0.95 } : {}}
-                whileHover={isValidUrl ? { scale: 1.05 } : {}}
+                whileTap={isValidUrl && !loading ? { scale: 0.95 } : {}}
+                whileHover={isValidUrl && !loading ? { scale: 1.05 } : {}}
               >
-                {loading?(<Loader className="animate-spin"/>):(<Play size={20} className={isValidUrl ? "animate-pulse" : ""} />)}
-                
-                <span>{loading?'Saving and redirecting':'Play'}</span>
+                {loading ? (
+                  <Loader className="animate-spin" />
+                ) : (
+                  <Play
+                    size={20}
+                    className={isValidUrl ? "animate-pulse" : ""}
+                  />
+                )}
+                <span>{loading ? "Saving and redirecting" : "Play"}</span>
               </motion.button>
             </div>
 
-            {/* Error Message */}
+            {/* Error Message — only shown if user has typed something invalid */}
             {playlistUrl && !isValidUrl && (
               <motion.p
                 initial={{ opacity: 0 }}
